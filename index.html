@@ -146,6 +146,24 @@ section.block { padding: 88px 0; }
 .clip:hover .play { background: var(--accent); }
 .clip .play svg { width: 14px; height: 14px; fill: var(--ink); margin-left: 2px; }
 .clip:hover .play svg { fill: var(--accent-ink); }
+.ythead { margin: 48px 0 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; }
+.ythead h3 { font-size: clamp(30px, 3.4vw, 40px); }
+.ytreel { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+.ytreel .clip { grid-column: span 2; aspect-ratio: 16 / 9; }
+.ytreel .clip:nth-child(-n+2) { grid-column: span 3; }
+.ytreel .clip::after { background: linear-gradient(180deg, transparent 40%, rgb(0 0 0 / .92) 88%); }
+.ytreel .clip .meta h3 { font-size: 22px; }
+.ytreel .clip:nth-child(-n+2) .meta h3 { font-size: 26px; }
+@media (max-width: 760px) {
+  .ytreel { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ytreel .clip, .ytreel .clip:nth-child(2) { grid-column: span 1; }
+  .ytreel .clip:first-child { grid-column: span 2; }
+  .ytreel .clip .meta { left: 10px; right: 10px; bottom: 10px; gap: 2px; }
+  .ytreel .clip:not(:first-child) .meta h3 { font-size: 17px; }
+  .ytreel .clip:not(:first-child) .meta p { display: none; }
+  .ytreel .clip:not(:first-child) .play { width: 30px; height: 30px; top: 8px; right: 8px; }
+  .ytreel .clip:not(:first-child) .badge { top: 8px; left: 8px; font-size: 10px; }
+}
 .reel-foot { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 @media (max-width: 900px) { .reel { grid-template-columns: repeat(2, 1fr); } .clip.h { grid-column: span 2; } }
 
@@ -310,6 +328,11 @@ footer { padding-bottom: 84px !important; }
       <p class="lede">Vertical ads for the feed, long edits for YouTube, and cinematic films. Every frame is cut, colored and finished by our team.</p>
     </div>
     <div class="reel" id="reel"></div>
+    <div class="ythead">
+      <h3>Long-form YouTube edits</h3>
+      <span class="muted">Shows, documentaries and explainers, edited by our team</span>
+    </div>
+    <div class="ytreel" id="ytReel"></div>
     <div class="reel-foot">
       <a class="btn primary" href="https://drive.google.com/drive/folders/1wAk84la_FnNWkipi6JgpX_H0UeO5-q4N" target="_blank" rel="noopener">See all work samples ↗</a>
       <a class="btn" id="portfolioBtn" href="https://azone.myportfolio.com/" target="_blank" rel="noopener">Open portfolio ↗</a>
@@ -461,14 +484,20 @@ footer { padding-bottom: 84px !important; }
     { shape: "h",  title: "Podcast & YouTube", note: "Podcast teaser edit",             badge: "PODCAST",     hue: ["#6f8f8a", "#141c1f"], drive: "1RpsF7IeigBK8xlGBTibadF4Q2lmC4hT1" },
     { shape: "h",  title: "Cinematic films",   note: "Mumbai: The City of Dreams",      badge: "CINEMATIC",   hue: ["#c9a46b", "#1d2a3a"], drive: "19QXHtfkslSsYFJxBm2-web1BBSE5IqOL" },
     { shape: "sq", title: "Reels & Shorts",    note: "Animated reel with captions",              badge: "REEL",        hue: ["#d98a5f", "#2b1b12"], drive: "1PoWAW6JoVvJW5MwhxAgC3R1J2yXBO8Wj", vertical: true },
-    { shape: "sq", title: "Brand films",       note: "Team promo film",                 badge: "BRAND FILM",  hue: ["#a7b39a", "#1b1f16"], drive: "1CQHNBpzBdCNDsdQ64myHc7_tjDKJ7hNy" }
+    { shape: "sq", title: "Brand films",       note: "Team promo film",                 badge: "BRAND FILM",  hue: ["#a7b39a", "#1b1f16"], drive: "1CQHNBpzBdCNDsdQ64myHc7_tjDKJ7hNy" },
+    /* long-form YouTube row (group "yt"); thumbnails are saved in thumbs/yt-<id>.jpg */
+    { group: "yt", title: "The Sham Sharma Show", note: "YouTube commentary edit",            badge: "NEWS SHOW",    hue: ["#c9603f", "#1a1210"], yt: "6oIV8jed880" },
+    { group: "yt", title: "The Property Show",    note: "Indore Talk · Season 2, Episode 1",  badge: "SHOW EPISODE", hue: ["#c9a46b", "#1d2a3a"], yt: "zlPlC4ZhEKA" },
+    { group: "yt", title: "Documentaries",        note: "Shyam Meera Singh · SMS Documentaries", badge: "DOCUMENTARY", hue: ["#8a2a22", "#120d0c"], yt: "i9qI4b5XOu8" },
+    { group: "yt", title: "Tech explainers",      note: "TechZone · PS5 price explained",     badge: "EXPLAINER",    hue: ["#e0796b", "#3b1530"], yt: "3SMW2zl7f5U" },
+    { group: "yt", title: "Retro gaming",         note: "TechZone · 90s games on a Smart TV", badge: "YOUTUBE",      hue: ["#6f8f8a", "#141c1f"], yt: "jun_rS49JTI" }
   ];
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   var reel = document.getElementById("reel");
   function thumb(w) {
     if (w.drive) return "thumbs/" + encodeURIComponent(w.drive) + ".jpg";
-    if (w.yt) return "https://i.ytimg.com/vi/" + encodeURIComponent(w.yt) + "/hqdefault.jpg";
+    if (w.yt) return "thumbs/yt-" + encodeURIComponent(w.yt) + ".jpg";
     return "";
   }
   function playerUrl(w) {
@@ -484,7 +513,7 @@ footer { padding-bottom: 84px !important; }
     if (w.yt) return "https://www.youtube.com/watch?v=" + encodeURIComponent(w.yt);
     return w.link || PORTFOLIO;
   }
-  reel.innerHTML = WORK.map(function (w, i) {
+  function card(w, i) {
     var bg = "background: radial-gradient(120% 90% at 20% 15%, " + w.hue[0] + " 0%, transparent 55%), linear-gradient(160deg, " + w.hue[1] + ", #0b0a09 80%);";
     var t = thumb(w);
     var img = t ? '<img alt="" loading="lazy" src="' + esc(t) + '" onerror="this.remove()">' : "";
@@ -494,7 +523,10 @@ footer { padding-bottom: 84px !important; }
       '<span class="play" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7-12 7z"/></svg></span>' +
       '<span class="meta"><h3>' + esc(w.title) + '</h3><p>' + esc(w.note) + '</p></span>' +
       '<span class="sr">Opens in a new tab</span></a>';
-  }).join("");
+  }
+  var ytReel = document.getElementById("ytReel");
+  reel.innerHTML = WORK.map(function (w, i) { return w.group ? "" : card(w, i); }).join("");
+  ytReel.innerHTML = WORK.map(function (w, i) { return w.group === "yt" ? card(w, i) : ""; }).join("");
 
   var lastFocus = null;
   function closeModal() {
@@ -503,7 +535,7 @@ footer { padding-bottom: 84px !important; }
     if (lastFocus) lastFocus.focus();
   }
   function onKey(e) { if (e.key === "Escape") closeModal(); }
-  reel.addEventListener("click", function (e) {
+  function onClip(e) {
     var a = e.target.closest("a.clip"); if (!a) return;
     var w = WORK[+a.getAttribute("data-i")];
     var local = w && mediaUrl(w), src = w && playerUrl(w);
@@ -517,12 +549,15 @@ footer { padding-bottom: 84px !important; }
         ? '<video controls autoplay playsinline preload="metadata" poster="' + esc(thumb(w)) + '" src="' + esc(local) + '"></video>'
         : '<iframe src="' + esc(src) + '" allow="autoplay; fullscreen; encrypted-media" allowfullscreen title="' + esc(w.title) + '"></iframe>') + '</div>' +
       (w.drive ? '<a class="more" href="' + esc(watchUrl(w)) + '" target="_blank" rel="noopener">Watch in full quality on Google Drive ↗</a>' : '') +
+      (w.yt ? '<a class="more" href="' + esc(watchUrl(w)) + '" target="_blank" rel="noopener">Watch on YouTube ↗</a>' : '') +
       '</div></div>';
     host.querySelector(".modal").addEventListener("click", function (ev) { if (ev.target === ev.currentTarget) closeModal(); });
     document.getElementById("closeModal").addEventListener("click", closeModal);
     document.getElementById("closeModal").focus();
     document.addEventListener("keydown", onKey);
-  });
+  }
+  reel.addEventListener("click", onClip);
+  ytReel.addEventListener("click", onClip);
 
   document.getElementById("yr").textContent = new Date().getFullYear();
 
