@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A-Zone Media Productions</title>
+<link rel="icon" type="image/svg+xml" href="logo/favicon.svg">
 <meta name="description" content="Video editing for D2C brands and creators: ad edits, AI UGC ads, podcast and YouTube editing, reels and brand films. An editing studio from Indore, India, with 12+ years of experience.">
 <meta property="og:title" content="A-Zone Media Productions">
 <meta property="og:description" content="Videos that stop the scroll and sell what you make. Get 2 free sample ads.">
@@ -60,14 +61,16 @@ em.serif { font-family: var(--font-serif); font-style: italic; text-transform: n
 /* nav */
 nav.top { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 nav.top .wrap { display: flex; align-items: center; gap: 24px; height: 64px; }
-.logo { display: flex; align-items: baseline; gap: 8px; text-decoration: none; }
-.logo b { font: 900 26px/1 var(--font-display); letter-spacing: 0.02em; }
-.logo span { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.logo svg { width: 40px; height: auto; flex: none; fill: var(--accent); }
+.logo .name { display: grid; gap: 3px; }
+.logo b { font: 900 24px/0.9 var(--font-display); letter-spacing: 0.02em; }
+.logo .name > span { font-size: 10.5px; line-height: 1; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
 nav.top .links { display: flex; gap: 22px; margin-left: auto; }
 nav.top .links a { text-decoration: none; color: var(--muted); font-size: 15px; }
 nav.top .links a:hover { color: var(--ink); }
 nav.top .btn { padding: 11px 16px; font-size: 14px; }
-@media (max-width: 760px) { nav.top .links { display: none; } nav.top .btn { margin-left: auto; } .logo span { display: none; } }
+@media (max-width: 760px) { nav.top .links { display: none; } nav.top .btn { margin-left: auto; } .logo svg { width: 34px; } .logo b { font-size: 21px; } .logo .name > span { font-size: 9.5px; } }
 
 /* hero */
 .hero { padding: 56px 0 40px; }
@@ -135,6 +138,8 @@ section.block { padding: 88px 0; }
 .clip.v { aspect-ratio: 9 / 16; }
 .clip.h { grid-column: span 2; aspect-ratio: 16 / 9; }
 .clip.sq { aspect-ratio: 1 / 1; }
+.reel .clip.h, .reel .clip.sq { width: 100%; height: 100%; } /* fill the row next to tall reels */
+@media (max-width: 520px) { .reel .clip:not(.h) .meta h3 { font-size: 20px; } .reel .clip:not(.h) .meta p { font-size: 12px; } }
 .clip .bgfill { position: absolute; inset: 0; z-index: -2; }
 .clip img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
 .clip::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, transparent 35%, rgb(0 0 0 / .78)); }
@@ -148,21 +153,21 @@ section.block { padding: 88px 0; }
 .clip:hover .play svg { fill: var(--accent-ink); }
 .ythead { margin: 48px 0 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; }
 .ythead h3 { font-size: clamp(30px, 3.4vw, 40px); }
-.ytreel { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
-.ytreel .clip { grid-column: span 2; aspect-ratio: 16 / 9; }
-.ytreel .clip:nth-child(-n+2) { grid-column: span 3; }
+.ytreel { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+.ytreel .clip { grid-column: span 3; aspect-ratio: 16 / 9; }
+.ytreel .clip:nth-child(-n+2) { grid-column: span 6; }
 .ytreel .clip::after { background: linear-gradient(180deg, transparent 40%, rgb(0 0 0 / .92) 88%); }
 .ytreel .clip .meta h3 { font-size: 22px; }
 .ytreel .clip:nth-child(-n+2) .meta h3 { font-size: 26px; }
 @media (max-width: 760px) {
   .ytreel { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .ytreel .clip, .ytreel .clip:nth-child(2) { grid-column: span 1; }
-  .ytreel .clip:first-child { grid-column: span 2; }
+  .ytreel .clip { grid-column: span 1; }
+  .ytreel .clip:nth-child(-n+2) { grid-column: span 2; }
   .ytreel .clip .meta { left: 10px; right: 10px; bottom: 10px; gap: 2px; }
-  .ytreel .clip:not(:first-child) .meta h3 { font-size: 17px; }
-  .ytreel .clip:not(:first-child) .meta p { display: none; }
-  .ytreel .clip:not(:first-child) .play { width: 30px; height: 30px; top: 8px; right: 8px; }
-  .ytreel .clip:not(:first-child) .badge { top: 8px; left: 8px; font-size: 10px; }
+  .ytreel .clip:nth-child(n+3) .meta h3 { font-size: 17px; }
+  .ytreel .clip:nth-child(n+3) .meta p { display: none; }
+  .ytreel .clip:nth-child(n+3) .play { width: 30px; height: 30px; top: 8px; right: 8px; }
+  .ytreel .clip:nth-child(n+3) .badge { top: 8px; left: 8px; font-size: 10px; }
 }
 .reel-foot { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 @media (max-width: 900px) { .reel { grid-template-columns: repeat(2, 1fr); } .clip.h { grid-column: span 2; } }
@@ -233,6 +238,8 @@ section.block { padding: 88px 0; }
 @media (max-width: 900px) { .contact .wrap { grid-template-columns: 1fr; } }
 
 footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px; }
+footer .foot-brand { display: inline-flex; align-items: center; gap: 10px; }
+footer .foot-brand svg { width: 26px; height: auto; fill: var(--accent); }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; }
 
 .modal { position: fixed; inset: 0; z-index: 40; background: rgb(0 0 0 / .95); display: grid; place-items: center; padding: 16px; }
@@ -258,7 +265,7 @@ footer { padding-bottom: 84px !important; }
 
 <nav class="top" aria-label="Main">
   <div class="wrap">
-    <a class="logo" href="#top" aria-label="A-Zone Media Productions, home"><b>A-ZONE</b><span>Media Productions</span></a>
+    <a class="logo" href="#top" aria-label="A-Zone Media Productions, home"><svg viewBox="0 0 238 172" aria-hidden="true"><path d="M96 41L120 0L144 41Z"/><path d="M20 171L71 171L120 78L212 78L237 44L21 44L0 78L74 78Z"/><path d="M122 81L148 127L195 127L168 81Z"/></svg><span class="name"><b>A-ZONE</b><span>Media Productions</span></span></a>
     <div class="links">
       <a href="#work">Work</a>
       <a href="#services">Services</a>
@@ -333,6 +340,11 @@ footer { padding-bottom: 84px !important; }
       <span class="muted">Shows, documentaries and explainers, edited by our team</span>
     </div>
     <div class="ytreel" id="ytReel"></div>
+    <div class="ythead">
+      <h3>Reels, trailers &amp; intros</h3>
+      <span class="muted">Music videos, documentaries, short films and title intros</span>
+    </div>
+    <div class="reel" id="moreReel"></div>
     <div class="reel-foot">
       <a class="btn primary" href="https://drive.google.com/drive/folders/1wAk84la_FnNWkipi6JgpX_H0UeO5-q4N" target="_blank" rel="noopener">See all work samples ↗</a>
       <a class="btn" id="portfolioBtn" href="https://azone.myportfolio.com/" target="_blank" rel="noopener">Open portfolio ↗</a>
@@ -463,7 +475,7 @@ footer { padding-bottom: 84px !important; }
 
 <footer>
   <div class="wrap">
-    <span>© <span id="yr">2026</span> A-Zone Media Productions · Indore, Madhya Pradesh, India</span>
+    <span class="foot-brand"><svg viewBox="0 0 238 172" aria-hidden="true"><path d="M96 41L120 0L144 41Z"/><path d="M20 171L71 171L120 78L212 78L237 44L21 44L0 78L74 78Z"/><path d="M122 81L148 127L195 127L168 81Z"/></svg><span>© <span id="yr">2026</span> A-Zone Media Productions · Indore, Madhya Pradesh, India</span></span>
     <span>Ad edits · AI UGC ads · Podcast editing · Brand films</span>
   </div>
 </footer>
@@ -483,14 +495,25 @@ footer { padding-bottom: 84px !important; }
     { shape: "v",  title: "AI UGC ads",        note: "AI creator ad sample",            badge: "AI UGC",      hue: ["#e0796b", "#3b1530"], drive: "1qHGgO4-y22ULKfDFYr0OozOkWk4-T-NU", vertical: true },
     { shape: "h",  title: "Podcast & YouTube", note: "Podcast teaser edit",             badge: "PODCAST",     hue: ["#6f8f8a", "#141c1f"], drive: "1RpsF7IeigBK8xlGBTibadF4Q2lmC4hT1" },
     { shape: "h",  title: "Cinematic films",   note: "Mumbai: The City of Dreams",      badge: "CINEMATIC",   hue: ["#c9a46b", "#1d2a3a"], drive: "19QXHtfkslSsYFJxBm2-web1BBSE5IqOL" },
-    { shape: "sq", title: "Reels & Shorts",    note: "Animated reel with captions",              badge: "REEL",        hue: ["#d98a5f", "#2b1b12"], drive: "1PoWAW6JoVvJW5MwhxAgC3R1J2yXBO8Wj", vertical: true },
-    { shape: "sq", title: "Brand films",       note: "Team promo film",                 badge: "BRAND FILM",  hue: ["#a7b39a", "#1b1f16"], drive: "1CQHNBpzBdCNDsdQ64myHc7_tjDKJ7hNy" },
+    { shape: "sq", title: "Reels & Shorts",    note: "Halation effect reel, Instagram", badge: "REEL",        hue: ["#d98a5f", "#2b1b12"], ig: "DAdS5SBsxzv", vertical: true },
+    { shape: "sq", title: "Brand films",       note: "Codesutra AI founder story",      badge: "BRAND FILM",  hue: ["#a7b39a", "#1b1f16"], drive: "1L2wIHza1VZWzRKgXReNo5D9suNYrrtgz" },
     /* long-form YouTube row (group "yt"); thumbnails are saved in thumbs/yt-<id>.jpg */
+    { group: "yt", title: "Akshat Gupta",         note: "The Fact-Tree · long-form episode",  badge: "LONG-FORM",    hue: ["#c9603f", "#1a1210"], yt: "xMxuwLYcbJU" },
     { group: "yt", title: "The Sham Sharma Show", note: "YouTube commentary edit",            badge: "NEWS SHOW",    hue: ["#c9603f", "#1a1210"], yt: "6oIV8jed880" },
     { group: "yt", title: "The Property Show",    note: "Indore Talk · Season 2, Episode 1",  badge: "SHOW EPISODE", hue: ["#c9a46b", "#1d2a3a"], yt: "zlPlC4ZhEKA" },
     { group: "yt", title: "Documentaries",        note: "Shyam Meera Singh · SMS Documentaries", badge: "DOCUMENTARY", hue: ["#8a2a22", "#120d0c"], yt: "i9qI4b5XOu8" },
     { group: "yt", title: "Tech explainers",      note: "TechZone · PS5 price explained",     badge: "EXPLAINER",    hue: ["#e0796b", "#3b1530"], yt: "3SMW2zl7f5U" },
-    { group: "yt", title: "Retro gaming",         note: "TechZone · 90s games on a Smart TV", badge: "YOUTUBE",      hue: ["#6f8f8a", "#141c1f"], yt: "jun_rS49JTI" }
+    { group: "yt", title: "Retro gaming",         note: "TechZone · 90s games on a Smart TV", badge: "YOUTUBE",      hue: ["#6f8f8a", "#141c1f"], yt: "jun_rS49JTI" },
+    /* "More work" row (group "more") */
+    { group: "more", shape: "h",  title: "Music video teaser",  note: "RVEE · Chal Chalan",              badge: "MUSIC VIDEO", hue: ["#f3a73a", "#2b1b12"], drive: "1B-YBwCmRq6rZj83idjwH0oyme6o482Ov" },
+    { group: "more", shape: "v",  title: "News explainer reel", note: "Maps & news graphics",            badge: "EXPLAINER",   hue: ["#6f8f8a", "#141c1f"], drive: "1JJhxB8cJZHcWiBS3UlK2MN_1QfVjM5d5", vertical: true },
+    { group: "more", shape: "v",  title: "Documentary teaser",  note: "Life story of an IAS officer",    badge: "DOC TEASER",  hue: ["#c9a46b", "#1d2a3a"], ig: "C09upZUMwBj", vertical: true },
+    { group: "more", shape: "h",  title: "Documentary trailer", note: "The 1975 Emergency",              badge: "TRAILER",     hue: ["#8a2a22", "#120d0c"], drive: "1eGzKnMnLd-keM9l2_UV4uDRUHCDFJ17z" },
+    { group: "more", shape: "sq", title: "Horror short",        note: "Ghost Face",                      badge: "SHORT",       hue: ["#3f6b4a", "#0c140e"], drive: "1TGEpU6YExKsmXj6DVzafO5n7dx40bWT0" },
+    { group: "more", shape: "sq", title: "Title intro",         note: "Knot Hanging Pictures",           badge: "INTRO",       hue: ["#e0796b", "#3b1530"], drive: "1B-dWYzt7acVYUMw8CEi7LYaxm7Lx00tW" },
+    { group: "more", shape: "v",  title: "Sports reel",         note: "Cricket reel",                    badge: "REEL",        hue: ["#a7b39a", "#1b1f16"], ig: "DCvWyzvTe6S", vertical: true },
+    { group: "more", shape: "v",  title: "Explainer reel",      note: "Animated reel with captions",     badge: "REEL",        hue: ["#d98a5f", "#2b1b12"], drive: "1PoWAW6JoVvJW5MwhxAgC3R1J2yXBO8Wj", vertical: true },
+    { group: "more", shape: "h",  title: "Brand promo",         note: "Team promo film",                 badge: "PROMO",       hue: ["#a7b39a", "#1b1f16"], drive: "1CQHNBpzBdCNDsdQ64myHc7_tjDKJ7hNy" }
   ];
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -498,6 +521,7 @@ footer { padding-bottom: 84px !important; }
   function thumb(w) {
     if (w.drive) return "thumbs/" + encodeURIComponent(w.drive) + ".jpg";
     if (w.yt) return "thumbs/yt-" + encodeURIComponent(w.yt) + ".jpg";
+    if (w.ig) return "thumbs/ig-" + encodeURIComponent(w.ig) + ".jpg";
     return "";
   }
   function playerUrl(w) {
@@ -506,11 +530,14 @@ footer { padding-bottom: 84px !important; }
     return "";
   }
   function mediaUrl(w) {
-    return w.drive ? "media/" + encodeURIComponent(w.drive) + ".mp4" : "";
+    if (w.drive) return "media/" + encodeURIComponent(w.drive) + ".mp4";
+    if (w.ig) return "media/ig-" + encodeURIComponent(w.ig) + ".mp4";
+    return "";
   }
   function watchUrl(w) {
     if (w.drive) return "https://drive.google.com/file/d/" + encodeURIComponent(w.drive) + "/view";
     if (w.yt) return "https://www.youtube.com/watch?v=" + encodeURIComponent(w.yt);
+    if (w.ig) return "https://www.instagram.com/reel/" + encodeURIComponent(w.ig) + "/";
     return w.link || PORTFOLIO;
   }
   function card(w, i) {
@@ -527,6 +554,8 @@ footer { padding-bottom: 84px !important; }
   var ytReel = document.getElementById("ytReel");
   reel.innerHTML = WORK.map(function (w, i) { return w.group ? "" : card(w, i); }).join("");
   ytReel.innerHTML = WORK.map(function (w, i) { return w.group === "yt" ? card(w, i) : ""; }).join("");
+  var moreReel = document.getElementById("moreReel");
+  moreReel.innerHTML = WORK.map(function (w, i) { return w.group === "more" ? card(w, i) : ""; }).join("");
 
   var lastFocus = null;
   function closeModal() {
@@ -550,6 +579,7 @@ footer { padding-bottom: 84px !important; }
         : '<iframe src="' + esc(src) + '" allow="autoplay; fullscreen; encrypted-media" allowfullscreen title="' + esc(w.title) + '"></iframe>') + '</div>' +
       (w.drive ? '<a class="more" href="' + esc(watchUrl(w)) + '" target="_blank" rel="noopener">Watch in full quality on Google Drive ↗</a>' : '') +
       (w.yt ? '<a class="more" href="' + esc(watchUrl(w)) + '" target="_blank" rel="noopener">Watch on YouTube ↗</a>' : '') +
+      (w.ig ? '<a class="more" href="' + esc(watchUrl(w)) + '" target="_blank" rel="noopener">Watch on Instagram ↗</a>' : '') +
       '</div></div>';
     host.querySelector(".modal").addEventListener("click", function (ev) { if (ev.target === ev.currentTarget) closeModal(); });
     document.getElementById("closeModal").addEventListener("click", closeModal);
@@ -558,6 +588,7 @@ footer { padding-bottom: 84px !important; }
   }
   reel.addEventListener("click", onClip);
   ytReel.addEventListener("click", onClip);
+  moreReel.addEventListener("click", onClip);
 
   document.getElementById("yr").textContent = new Date().getFullYear();
 
