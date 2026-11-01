@@ -1,7 +1,8 @@
-name: Get the A-Zone logo from Instagram
+name: Get the A-Zone logo from a video frame
 
-# Saves the profile picture of the Instagram account named in logo/source.txt
-# (the A-Zone logo) as logo/profile.jpg, in the largest size available.
+# Takes one full-resolution frame from the Chal Chalan teaser on Google Drive
+# (white title card with the A-Zone mark in the corner) and saves the top-left
+# corner as logo/frame-crop.png, so the mark can be traced as a sharp vector.
 on:
   workflow_dispatch:
   push:
@@ -17,32 +18,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch profile picture
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q gdown
+      - name: Extract frame
         run: |
           set -u
-          user=$(head -1 logo/source.txt | tr -d '[:space:]')
-          url=""
-          # 1) Instagram's public web profile endpoint (gives the HD picture).
-          curl -sS -m 30 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36" \
-            -H "x-ig-app-id: 936619743392459" \
-            "https://i.instagram.com/api/v1/users/web_profile_info/?username=$user" -o /tmp/p.json || true
-          url=$(python3 -c "import json; d=json.load(open('/tmp/p.json')); u=d['data']['user']; print(u.get('profile_pic_url_hd') or u.get('profile_pic_url') or '')" 2>/dev/null || true)
-          echo "api url: ${url:0:80}"
-          # 2) Fallback: the link-preview image of the profile page.
-          if [ -z "$url" ]; then
-            curl -sSL -m 30 -A "facebookexternalhit/1.1" "https://www.instagram.com/$user/" -o /tmp/p.html || true
-            url=$(grep -o '<meta property="og:image" content="[^"]*"' /tmp/p.html | head -1 | sed 's/.*content="//; s/"$//; s/&amp;/\&/g')
-            echo "og url: ${url:0:80}"
-          fi
-          if [ -n "$url" ] && curl -fsS -m 30 "$url" -o logo/profile.jpg; then
-            python3 -c "import struct,sys; print('saved', sys.argv[1])" "$(stat -c%s logo/profile.jpg) bytes"
-          else
-            echo "FAILED to get the profile picture" | tee logo/failed.txt
-          fi
+          id=$(sed -n 2p logo/source.txt | tr -d '[:space:]')
+          t=$(sed -n 3p logo/source.txt | tr -d '[:space:]')
+          gdown --quiet "https://drive.google.com/uc?id=$id" -O /tmp/v.mp4
+          ffmpeg -nostdin -v error -y -ss "$t" -i /tmp/v.mp4 -frames:v 1 /tmp/f.png
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 /tmp/f.png
+          ffmpeg -nostdin -v error -y -i /tmp/f.png -vf "crop=iw*0.12:ih*0.17:0:0" logo/frame-crop.png
+          rm -f logo/failed.txt
       - name: Save
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add logo
-          git diff --cached --quiet || git commit -m "Add A-Zone logo from Instagram"
+          git add -A logo
+          git diff --cached --quiet || git commit -m "Add full-resolution logo frame crop"
           for n in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 5; done
