@@ -35,7 +35,7 @@ jobs:
             dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 /tmp/v.mp4)
             wh=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 /tmp/v.mp4)
             t=$(python3 -c "d=float('${dur:-0}' or 0); print(round(max(0.5, d*0.3), 2))")
-            ffmpeg -v error -y -ss "$t" -i /tmp/v.mp4 -vf "thumbnail=50,scale='min(1280,iw)':-2" -frames:v 1 -q:v 3 "thumbs/$id.jpg"
+            ffmpeg -nostdin -v error -y -ss "$t" -i /tmp/v.mp4 -vf "thumbnail=50,scale='min(1280,iw)':-2" -frames:v 1 -q:v 3 "thumbs/$id.jpg"
             echo "$id size=$wh duration=$dur" | tee -a thumbs/info.txt
             rm -f /tmp/v.mp4
             echo "::endgroup::"

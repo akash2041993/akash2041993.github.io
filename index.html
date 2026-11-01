@@ -457,7 +457,7 @@ footer { padding-bottom: 84px !important; }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   var reel = document.getElementById("reel");
   function thumb(w) {
-    if (w.drive) return "https://drive.google.com/thumbnail?id=" + encodeURIComponent(w.drive) + "&sz=w1000";
+    if (w.drive) return "thumbs/" + encodeURIComponent(w.drive) + ".jpg";
     if (w.yt) return "https://i.ytimg.com/vi/" + encodeURIComponent(w.yt) + "/hqdefault.jpg";
     return "";
   }
