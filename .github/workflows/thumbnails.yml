@@ -54,14 +54,17 @@ jobs:
               echo "FAILED_WEB $id"; echo "::endgroup::"; continue
             fi
             dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 /tmp/v.mp4 </dev/null)
+            # Long films (over 4 minutes): the web copy is a 2-minute preview; the full film stays on Drive.
+            cut=""; tag=""
+            if python3 -c "import sys; sys.exit(0 if float('${dur:-0}' or 0) > 240 else 1)"; then cut="-t 120"; dur=120; tag=" preview=120s"; fi
             # Aim for about 17 MB per file, at most 1.8 Mbps video, 720p on the short side.
             vk=$(python3 -c "d=float('${dur:-60}' or 60); print(int(max(500, min(1800, 17*8*1024/d - 96))))")
-            ffmpeg -nostdin -v error -y -i /tmp/v.mp4 \
+            ffmpeg -nostdin -v error -y $cut -i /tmp/v.mp4 \
               -vf "scale='if(gt(iw,ih),-2,720)':'if(gt(iw,ih),720,-2)',fps=30" \
               -c:v libx264 -preset veryfast -profile:v high -pix_fmt yuv420p \
               -b:v ${vk}k -maxrate $((vk*3/2))k -bufsize $((vk*2))k \
               -c:a aac -b:a 96k -ac 2 -movflags +faststart "media/$id.mp4"
-            echo "$id web_kbps=$vk size=$(du -h media/$id.mp4 | cut -f1)" | tee -a media/info.txt
+            echo "$id web_kbps=$vk size=$(du -h media/$id.mp4 | cut -f1)$tag" | tee -a media/info.txt
             rm -f /tmp/v.mp4
             echo "::endgroup::"
           done < thumbs/list.txt
@@ -71,4 +74,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add thumbs media
           git commit -m "Add video thumbnails and web videos" || echo "Nothing new"
-          git push
+          for n in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 5; done

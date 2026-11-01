@@ -1,0 +1,73 @@
+name: Get Instagram reels for the website
+
+# Reads Instagram reel codes from ig/list.txt. For each reel it tries to save a
+# thumbnail (thumbs/ig-<code>.jpg), a small web copy (media/ig-<code>.mp4) and
+# basic info (ig/<code>.json). If the video can't be downloaded, it still tries
+# to save the preview image so the card can link to Instagram.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "ig/list.txt"
+      - ".github/workflows/instagram.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  reels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q -U yt-dlp
+      - name: Fetch reels
+        run: |
+          set -u
+          mkdir -p ig thumbs media
+          while read -r code; do
+            [ -z "$code" ] && continue
+            [ -s "media/ig-$code.mp4" ] && continue
+            echo "::group::$code"
+            url="https://www.instagram.com/reel/$code/"
+            rm -f /tmp/ig.* /tmp/ig.info.json
+            if yt-dlp -q --no-warnings -f "bv*+ba/b" --merge-output-format mp4 --write-info-json -o "/tmp/ig.%(ext)s" "$url" </dev/null; then
+              python3 - "$code" <<'PY'
+          import json, sys
+          code = sys.argv[1]
+          d = json.load(open("/tmp/ig.info.json"))
+          keep = {k: d.get(k) for k in ("uploader", "channel", "title", "description", "duration", "width", "height", "like_count", "view_count", "timestamp")}
+          if keep.get("description"): keep["description"] = keep["description"][:300]
+          json.dump(keep, open(f"ig/{code}.json", "w"), ensure_ascii=False, indent=1)
+          PY
+              dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 /tmp/ig.mp4 </dev/null)
+              wh=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 /tmp/ig.mp4 </dev/null)
+              t=$(python3 -c "d=float('${dur:-0}' or 0); print(round(max(0.5, d*0.3), 2))")
+              ffmpeg -nostdin -v error -y -ss "$t" -i /tmp/ig.mp4 -vf "thumbnail=50,scale='min(1280,iw)':-2" -frames:v 1 -q:v 3 "thumbs/ig-$code.jpg"
+              vk=$(python3 -c "d=float('${dur:-60}' or 60); print(int(max(500, min(1800, 17*8*1024/d - 96))))")
+              ffmpeg -nostdin -v error -y -i /tmp/ig.mp4 \
+                -vf "scale='if(gt(iw,ih),-2,720)':'if(gt(iw,ih),720,-2)',fps=30" \
+                -c:v libx264 -preset veryfast -profile:v high -pix_fmt yuv420p \
+                -b:v ${vk}k -maxrate $((vk*3/2))k -bufsize $((vk*2))k \
+                -c:a aac -b:a 96k -ac 2 -movflags +faststart "media/ig-$code.mp4"
+              echo "ig-$code size=$wh duration=$dur web=$(du -h media/ig-$code.mp4 | cut -f1)" | tee -a ig/info.txt
+            else
+              echo "VIDEO_FAILED $code" | tee -a ig/info.txt
+              # Fallback: the page preview image and title that link previews use.
+              curl -sSL -A "facebookexternalhit/1.1" "$url" -o /tmp/ig.html </dev/null || true
+              img=$(grep -o '<meta property="og:image" content="[^"]*"' /tmp/ig.html | head -1 | sed 's/.*content="//; s/"$//; s/&amp;/\&/g')
+              ttl=$(grep -o '<meta property="og:title" content="[^"]*"' /tmp/ig.html | head -1 | sed 's/.*content="//; s/"$//')
+              echo "{\"og_title\": $(python3 -c 'import json,sys; print(json.dumps(sys.argv[1]))' "$ttl")}" > "ig/$code.json"
+              if [ -n "$img" ] && curl -fsS "$img" -o "thumbs/ig-$code.jpg" </dev/null; then echo "ig-$code thumb_only" | tee -a ig/info.txt; fi
+            fi
+            echo "::endgroup::"
+          done < ig/list.txt
+      - name: Save
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ig thumbs media
+          git diff --cached --quiet || git commit -m "Add Instagram reel thumbnails and web videos"
+          for n in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 5; done
