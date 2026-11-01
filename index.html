@@ -7,9 +7,11 @@
 <script>
 /* Day/night theme from the visitor's local time: light 6 AM to 6 PM, dark otherwise.
    Runs before the page is drawn, so there is no flash of the wrong theme.
-   Preview either theme with ?theme=light or ?theme=dark in the address. */
+   Preview either theme with ?time=day or ?time=night in the address.
+   (Not "?theme=": some apps add their own theme setting to the address.) */
 (function () {
-  var forced = (location.search.match(/[?&]theme=(light|dark)/) || [])[1];
+  var f = (location.search.match(/[?&]time=(day|night)\b/) || [])[1];
+  var forced = f === "day" ? "light" : f === "night" ? "dark" : null;
   function pick() { var h = new Date().getHours(); return forced || (h >= 6 && h < 18 ? "light" : "dark"); }
   document.documentElement.setAttribute("data-theme", pick());
   window.__pickTheme = pick;
