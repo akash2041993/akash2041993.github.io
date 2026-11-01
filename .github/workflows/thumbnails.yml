@@ -1,0 +1,49 @@
+name: Make video thumbnails
+
+# Reads Google Drive video IDs from thumbs/list.txt, takes one still frame
+# from each video, and saves it as thumbs/<id>.jpg for the website.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "thumbs/list.txt"
+      - ".github/workflows/thumbnails.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  thumbs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q gdown
+      - name: Make thumbnails
+        run: |
+          set -u
+          mkdir -p thumbs
+          while read -r id; do
+            [ -z "$id" ] && continue
+            [ -f "thumbs/$id.jpg" ] && continue
+            echo "::group::$id"
+            if ! gdown --quiet "https://drive.google.com/uc?id=$id" -O /tmp/v.mp4; then
+              echo "FAILED_DOWNLOAD $id" | tee -a thumbs/info.txt; echo "::endgroup::"; continue
+            fi
+            dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 /tmp/v.mp4)
+            wh=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 /tmp/v.mp4)
+            t=$(python3 -c "d=float('${dur:-0}' or 0); print(round(max(0.5, d*0.3), 2))")
+            ffmpeg -v error -y -ss "$t" -i /tmp/v.mp4 -vf "thumbnail=50,scale='min(1280,iw)':-2" -frames:v 1 -q:v 3 "thumbs/$id.jpg"
+            echo "$id size=$wh duration=$dur" | tee -a thumbs/info.txt
+            rm -f /tmp/v.mp4
+            echo "::endgroup::"
+          done < thumbs/list.txt
+      - name: Save thumbnails
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add thumbs
+          git commit -m "Add video thumbnails" || echo "No new thumbnails"
+          git push
