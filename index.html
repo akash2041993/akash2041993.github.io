@@ -186,6 +186,10 @@ section.block { padding: 88px 0; }
 .plan li { padding-left: 22px; position: relative; color: #d9d1c6; font-size: 15px; }
 .plan li::before { content: ""; position: absolute; left: 2px; top: 9px; width: 9px; height: 9px; border-radius: 2px; background: var(--accent); }
 .plan .for { color: var(--muted); font-size: 14px; margin: 0; }
+.plan .price { margin: 0; font: 900 46px/1 var(--font-display); letter-spacing: 0.01em; font-variant-numeric: tabular-nums; }
+.plan .price span { display: block; font: 500 12px/1.6 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.plan .price small { font: 500 15px/1 var(--font-body); color: var(--muted); margin-left: 4px; }
+.plan .pop { justify-self: start; background: var(--accent); color: var(--accent-ink); padding: 4px 8px; border-radius: 4px; font-size: 11px; }
 @media (max-width: 900px) { .plans { grid-template-columns: 1fr; } }
 
 /* faq */
@@ -219,6 +223,9 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
 .modal .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--ink); }
 .modal .bar b { font: 800 24px/1 var(--font-display); text-transform: uppercase; }
 .modal button { font: 600 15px/1 var(--font-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; cursor: pointer; }
+.wa-float { position: fixed; right: 16px; bottom: 16px; z-index: 20; display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; border-radius: 999px; background: #25d366; color: #06210f; font: 700 15px/1 var(--font-body); text-decoration: none; box-shadow: 0 10px 30px rgb(0 0 0 / .45); }
+.wa-float svg { width: 18px; height: 18px; fill: #06210f; }
+footer { padding-bottom: 84px !important; }
 .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 11px 18px; border-radius: 999px; font-size: 15px; z-index: 30; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 </style>
@@ -352,25 +359,29 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
     <div class="head">
       <span class="mono kicker">Monthly plans</span>
       <h2 id="plans-h">Pick what you need</h2>
-      <p class="lede">Every plan is priced for your volume. Tell us what you need and we'll send a clear quote.</p>
+      <p class="lede">Starting prices. The final price depends on how many videos you need. For clients outside India, we quote in US dollars.</p>
     </div>
     <div class="plans">
       <div class="plan">
         <h3>Creator</h3>
         <p class="for">For podcasters and YouTube channels</p>
-        <ul><li>Full episode edits</li><li>Shorts and Reels from every episode</li><li>Captions, B-roll, color and sound</li><li>Thumbnail ideas</li></ul>
+        <p class="price"><span>From</span> ₹30,000<small>/month</small></p>
+        <ul><li>Up to 4 full episode edits</li><li>12 Shorts or Reels</li><li>Captions, B-roll, color and sound</li><li>Thumbnail ideas</li></ul>
         <a class="btn" href="#contact">Ask for a quote</a>
       </div>
       <div class="plan feature">
+        <span class="mono pop">Best for brands</span>
         <h3>Brand ads</h3>
         <p class="for">For D2C brands running Meta and YouTube ads</p>
-        <ul><li>Fresh ad videos every month</li><li>UGC and AI creator ads</li><li>Hook and format variations to test</li><li>Ready to upload for each platform</li></ul>
+        <p class="price"><span>From</span> ₹75,000<small>/month</small></p>
+        <ul><li>10 ad videos every month</li><li>UGC and AI creator ads</li><li>Hook versions to test</li><li>Ready to upload for each platform</li></ul>
         <a class="btn primary" href="#contact">Start with a free sample</a>
       </div>
       <div class="plan">
         <h3>Production</h3>
         <p class="for">For launches, stores and brand stories</p>
-        <ul><li>Shoot days with a DoP</li><li>Drone and aerial shots</li><li>Brand and launch films</li><li>Cut-downs for social</li></ul>
+        <p class="price"><span>From</span> ₹25,000<small>/shoot day</small></p>
+        <ul><li>Director of Photography with camera kit</li><li>Drone and aerial shots (add-on)</li><li>Brand and launch films</li><li>Editing priced by length</li></ul>
         <a class="btn" href="#contact">Ask for a quote</a>
       </div>
     </div>
@@ -398,13 +409,18 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
     <div style="display:grid;gap:18px">
       <span class="mono kicker">Free sample</span>
       <h2 id="contact-h">Let's make your <em class="serif">first ad</em> together.</h2>
-      <p class="lede">Send us your brand or channel link and what you sell. We'll reply with an idea for your free sample.</p>
+      <p class="lede">Send us your brand or channel link and what you sell, on WhatsApp or email. We'll reply with an idea for your free sample.</p>
     </div>
     <div class="card">
-      <span class="mono muted">Email us</span>
+      <span class="mono muted">WhatsApp</span>
+      <span class="addr">+91 88717 98578</span>
+      <div class="row">
+        <a class="btn primary" href="https://wa.me/918871798578?text=Hi%20A-Zone%2C%20I%20want%20a%20free%20sample%20video%20for%20my%20brand." target="_blank" rel="noopener">Chat on WhatsApp</a>
+      </div>
+      <span class="mono muted" style="margin-top:6px">Email us</span>
       <span class="addr" id="emailText">azoneindore@gmail.com</span>
       <div class="row">
-        <a class="btn primary" id="mailBtn" href="mailto:azoneindore@gmail.com?subject=Free%20sample%20request&amp;body=Hi%20A-Zone%2C%0A%0AMy%20brand%2Fchannel%3A%20%0AWhat%20we%20sell%3A%20%0AWhat%20videos%20we%20need%3A%20%0A">Write an email</a>
+        <a class="btn" id="mailBtn" href="mailto:azoneindore@gmail.com?subject=Free%20sample%20request&amp;body=Hi%20A-Zone%2C%0A%0AMy%20brand%2Fchannel%3A%20%0AWhat%20we%20sell%3A%20%0AWhat%20videos%20we%20need%3A%20%0A">Write an email</a>
         <button class="btn" type="button" id="copyBtn">Copy email</button>
       </div>
       <a class="muted" href="https://azone.myportfolio.com/" target="_blank" rel="noopener" style="font-size:15px">Portfolio: azone.myportfolio.com ↗</a>
@@ -419,6 +435,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
   </div>
 </footer>
 
+<a class="wa-float" href="https://wa.me/918871798578?text=Hi%20A-Zone%2C%20I%20want%20a%20free%20sample%20video%20for%20my%20brand." target="_blank" rel="noopener" aria-label="Chat with A-Zone on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v11H8.5L4 19z"/></svg><span>WhatsApp</span></a>
 <div id="toastHost" aria-live="polite"></div>
 <div id="modalHost"></div>
 
@@ -429,12 +446,12 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
   /* ---- WORK: each card can have "drive" (a Google Drive file id, shared as Anyone with the link) or "yt" (a YouTube id). Cards with neither open the portfolio. ---- */
   var PORTFOLIO = "https://azone.myportfolio.com/";
   var WORK = [
-    { shape: "v",  title: "Product ads",        note: "D2C ads for Reels and Meta",      badge: "9:16 · 30s", hue: ["#f3a73a", "#7a2d12"], link: PORTFOLIO },
-    { shape: "v",  title: "AI UGC ads",         note: "AI creators, real-sounding scripts", badge: "9:16 · AI",  hue: ["#e0796b", "#3b1530"], link: PORTFOLIO },
-    { shape: "h",  title: "Podcast & YouTube",  note: "Long-form edits for top creators",  badge: "16:9 · Long-form", hue: ["#6f8f8a", "#141c1f"], link: PORTFOLIO },
-    { shape: "h",  title: "Drone & cinematic",  note: "Aerials, events and brand shoots",  badge: "16:9 · 4K", hue: ["#c9a46b", "#1d2a3a"], link: PORTFOLIO },
-    { shape: "sq", title: "Reels & Shorts",     note: "Clips that hold attention",          badge: "1:1 · 9:16", hue: ["#d98a5f", "#2b1b12"], link: PORTFOLIO },
-    { shape: "sq", title: "Brand films",        note: "Founder and product stories",        badge: "16:9 · 90s", hue: ["#a7b39a", "#1b1f16"], link: PORTFOLIO }
+    { shape: "v",  title: "Product ads",       note: "Ad film made by A-Zone",          badge: "AD",          hue: ["#f3a73a", "#7a2d12"], drive: "17xL2w2nWa478rKVFHGYz1QptVW3RGTOz" },
+    { shape: "v",  title: "AI UGC ads",        note: "AI creator ad sample",            badge: "AI UGC",      hue: ["#e0796b", "#3b1530"], drive: "1qHGgO4-y22ULKfDFYr0OozOkWk4-T-NU" },
+    { shape: "h",  title: "Podcast & YouTube", note: "Podcast teaser edit",             badge: "PODCAST",     hue: ["#6f8f8a", "#141c1f"], drive: "1RpsF7IeigBK8xlGBTibadF4Q2lmC4hT1" },
+    { shape: "h",  title: "Cinematic films",   note: "Mumbai: The City of Dreams",      badge: "CINEMATIC",   hue: ["#c9a46b", "#1d2a3a"], drive: "19QXHtfkslSsYFJxBm2-web1BBSE5IqOL" },
+    { shape: "sq", title: "Reels & Shorts",    note: "Reel with captions",              badge: "REEL",        hue: ["#d98a5f", "#2b1b12"], drive: "1PoWAW6JoVvJW5MwhxAgC3R1J2yXBO8Wj", vertical: true },
+    { shape: "sq", title: "Brand films",       note: "Team promo film",                 badge: "BRAND FILM",  hue: ["#a7b39a", "#1b1f16"], drive: "1CQHNBpzBdCNDsdQ64myHc7_tjDKJ7hNy" }
   ];
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -481,7 +498,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: 
     lastFocus = a;
     var host = document.getElementById("modalHost");
     host.innerHTML = '<div class="modal" role="dialog" aria-modal="true" aria-label="' + esc(w.title) + '">' +
-      '<div class="box' + (w.shape === "v" ? " v" : "") + '"><div class="bar"><b>' + esc(w.title) + '</b><button type="button" id="closeModal">Close</button></div>' +
+      '<div class="box' + (w.vertical ? " v" : "") + '"><div class="bar"><b>' + esc(w.title) + '</b><button type="button" id="closeModal">Close</button></div>' +
       '<div class="screen"><iframe src="' + esc(src) + '" allow="autoplay; fullscreen; encrypted-media" allowfullscreen title="' + esc(w.title) + '"></iframe></div></div></div>';
     host.querySelector(".modal").addEventListener("click", function (ev) { if (ev.target === ev.currentTarget) closeModal(); });
     document.getElementById("closeModal").addEventListener("click", closeModal);
