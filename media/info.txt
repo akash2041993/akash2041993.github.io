@@ -5,7 +5,6 @@
 1PoWAW6JoVvJW5MwhxAgC3R1J2yXBO8Wj web_kbps=721 size=12M
 1CQHNBpzBdCNDsdQ64myHc7_tjDKJ7hNy web_kbps=1800 size=11M
 1JJhxB8cJZHcWiBS3UlK2MN_1QfVjM5d5 web_kbps=1800 size=13M
-1L2wIHza1VZWzRKgXReNo5D9suNYrrtgz web_kbps=1064 size=16M preview=120s
 1TGEpU6YExKsmXj6DVzafO5n7dx40bWT0 web_kbps=1800 size=5.5M
 1B-dWYzt7acVYUMw8CEi7LYaxm7Lx00tW web_kbps=1800 size=2.6M
 1eGzKnMnLd-keM9l2_UV4uDRUHCDFJ17z web_kbps=1800 size=8.0M

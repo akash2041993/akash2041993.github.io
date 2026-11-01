@@ -54,11 +54,11 @@ jobs:
               echo "FAILED_WEB $id"; echo "::endgroup::"; continue
             fi
             dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 /tmp/v.mp4 </dev/null)
-            # Long films (over 4 minutes): the web copy is a 2-minute preview; the full film stays on Drive.
+            # Long films (over 6 minutes): the web copy is a 2-minute preview; the full film stays on Drive.
             cut=""; tag=""
-            if python3 -c "import sys; sys.exit(0 if float('${dur:-0}' or 0) > 240 else 1)"; then cut="-t 120"; dur=120; tag=" preview=120s"; fi
+            if python3 -c "import sys; sys.exit(0 if float('${dur:-0}' or 0) > 360 else 1)"; then cut="-t 120"; dur=120; tag=" preview=120s"; fi
             # Aim for about 17 MB per file, at most 1.8 Mbps video, 720p on the short side.
-            vk=$(python3 -c "d=float('${dur:-60}' or 60); print(int(max(500, min(1800, 17*8*1024/d - 96))))")
+            vk=$(python3 -c "d=float('${dur:-60}' or 60); print(int(max(1000, min(1800, 17*8*1024/d - 96))))")
             ffmpeg -nostdin -v error -y $cut -i /tmp/v.mp4 \
               -vf "scale='if(gt(iw,ih),-2,720)':'if(gt(iw,ih),720,-2)',fps=30" \
               -c:v libx264 -preset veryfast -profile:v high -pix_fmt yuv420p \
