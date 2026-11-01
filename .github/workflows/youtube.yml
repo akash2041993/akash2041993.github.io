@@ -1,0 +1,49 @@
+name: Get YouTube video info and thumbnails
+
+# Reads YouTube video IDs from yt/list.txt. For each one it saves the title and
+# channel (yt/<id>.json), whether it is a Short (yt/<id>.short), and a
+# thumbnail the website can show (thumbs/yt-<id>.jpg).
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "yt/list.txt"
+      - ".github/workflows/youtube.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch info and thumbnails
+        run: |
+          set -u
+          mkdir -p yt thumbs
+          while read -r id; do
+            [ -z "$id" ] && continue
+            echo "::group::$id"
+            curl -fsS "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=$id&format=json" -o "yt/$id.json" </dev/null \
+              || echo '{"error":"oembed failed"}' > "yt/$id.json"
+            # A Short answers 200 on /shorts/<id>; a normal video redirects to /watch.
+            code=$(curl -s -o /dev/null -w "%{http_code}" "https://www.youtube.com/shorts/$id" </dev/null)
+            if [ "$code" = "200" ]; then echo short > "yt/$id.short"; else rm -f "yt/$id.short"; fi
+            if [ ! -s "thumbs/yt-$id.jpg" ]; then
+              for q in maxresdefault sddefault hqdefault; do
+                if curl -fsS "https://i.ytimg.com/vi/$id/$q.jpg" -o /tmp/t.jpg </dev/null && [ "$(stat -c%s /tmp/t.jpg)" -gt 3000 ]; then
+                  mv /tmp/t.jpg "thumbs/yt-$id.jpg"; echo "thumb $q"; break
+                fi
+              done
+            fi
+            cat "yt/$id.json"; echo; echo "shorts http=$code"
+            echo "::endgroup::"
+          done < yt/list.txt
+      - name: Save
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add yt thumbs
+          git diff --cached --quiet || git commit -m "Add YouTube info and thumbnails"
+          git push
