@@ -4,11 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A-Zone Media Productions</title>
-<link rel="icon" type="image/svg+xml" href="logo/favicon.svg">
+<script>
+/* Day/night theme from the visitor's local time: light 6 AM to 6 PM, dark otherwise.
+   Runs before the page is drawn, so there is no flash of the wrong theme.
+   Preview either theme with ?theme=light or ?theme=dark in the address. */
+(function () {
+  var forced = (location.search.match(/[?&]theme=(light|dark)/) || [])[1];
+  function pick() { var h = new Date().getHours(); return forced || (h >= 6 && h < 18 ? "light" : "dark"); }
+  document.documentElement.setAttribute("data-theme", pick());
+  window.__pickTheme = pick;
+})();
+</script>
+<link rel="icon" type="image/svg+xml" href="logo/favicon-dark.svg" id="favicon">
 <meta name="description" content="Video editing for D2C brands and creators: ad edits, AI UGC ads, podcast and YouTube editing, reels and brand films. An editing studio from Indore, India, with 12+ years of experience.">
 <meta property="og:title" content="A-Zone Media Productions">
-<meta property="og:description" content="Videos that stop the scroll and sell what you make. Get 2 free sample ads.">
-<meta name="theme-color" content="#0d0c0b">
+<meta property="og:description" content="Videos that stop the scroll and sell what you make. Video editing for D2C brands and creators.">
+<meta name="theme-color" content="#0d0c0b" id="themeColor">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -24,12 +35,33 @@
   --line: #2e2a26;
   --accent: #f3a73a;
   --accent-ink: #1a1206;
+  --accent-text: #f3a73a;
+  --ink-2: #d9d1c6;
+  --logo: #ffffff;
+  --shadow: rgb(0 0 0 / .55);
   --rec: #ea4330;
   --font-display: "Big Shoulders Display", Impact, "Arial Narrow", sans-serif-condensed, sans-serif;
   --font-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-serif: "Instrument Serif", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
   color-scheme: dark;
+}
+html[data-theme="light"] {
+  --bg: #ffffff;
+  --surface: #f6f5f3;
+  --raise: #ecebe8;
+  --ink: #0b0b0b;
+  --ink-2: #2e2a26;
+  --muted: #5f5850;
+  --line: #e2ded9;
+  --accent-text: #a5560a;
+  --logo: #000000;
+  --shadow: rgb(0 0 0 / .18);
+  color-scheme: light;
+}
+/* Smooth colour change when the theme switches (colours only, never layout). */
+html.theme-switching body, html.theme-switching body *:not(.frame):not(.frame *), html.theme-switching body *::before, html.theme-switching body *::after {
+  transition: background-color .9s ease, color .9s ease, border-color .9s ease, fill .9s ease, box-shadow .9s ease !important;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -45,10 +77,10 @@ h1, h2, h3 { margin: 0; font-family: var(--font-display); text-transform: upperc
 h1 { font-weight: 900; font-size: clamp(52px, 10vw, 116px); line-height: 0.88; }
 h2 { font-weight: 800; font-size: clamp(40px, 6vw, 76px); line-height: 0.9; }
 h3 { font-weight: 800; font-size: 28px; line-height: 1; }
-em.serif { font-family: var(--font-serif); font-style: italic; text-transform: none; font-weight: 400; color: var(--accent); letter-spacing: 0; }
+em.serif { font-family: var(--font-serif); font-style: italic; text-transform: none; font-weight: 400; color: var(--accent-text); letter-spacing: 0; }
 .mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
 .muted { color: var(--muted); }
-.lede { font-size: clamp(18px, 2vw, 21px); max-width: 34em; color: #d9d1c6; }
+.lede { font-size: clamp(18px, 2vw, 21px); max-width: 34em; color: var(--ink-2); }
 
 /* buttons */
 .btn { display: inline-flex; align-items: center; gap: 10px; font: 600 16px/1 var(--font-body); padding: 16px 22px; border-radius: 999px; text-decoration: none; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; transition: transform .2s, background .2s, border-color .2s; }
@@ -62,7 +94,7 @@ em.serif { font-family: var(--font-serif); font-style: italic; text-transform: n
 nav.top { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 nav.top .wrap { display: flex; align-items: center; gap: 24px; height: 64px; }
 .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
-.logo svg { width: 40px; height: auto; flex: none; fill: var(--accent); }
+.logo svg { width: 40px; height: auto; flex: none; fill: var(--logo); }
 .logo .name { display: grid; gap: 3px; }
 .logo b { font: 900 24px/0.9 var(--font-display); letter-spacing: 0.02em; }
 .logo .name > span { font-size: 10.5px; line-height: 1; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
@@ -80,11 +112,11 @@ nav.top .btn { padding: 11px 16px; font-size: 14px; }
 .eyebrow i { width: 10px; height: 10px; border-radius: 50%; background: var(--rec); display: inline-block; }
 .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
 .proof { display: grid; gap: 6px; padding-top: 6px; border-top: 1px solid var(--line); }
-.proof p { margin: 0; color: #d9d1c6; font-size: 15px; }
+.proof p { margin: 0; color: var(--ink-2); font-size: 15px; }
 @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } .hero { padding-top: 36px; } }
 
 .stage { position: relative; height: clamp(320px, 46vw, 520px); display: grid; place-items: center; }
-.frame { position: relative; width: 100%; height: 100%; border-radius: 6px; overflow: hidden; background: #000; transition: width .7s cubic-bezier(.7,0,.2,1), height .7s cubic-bezier(.7,0,.2,1); box-shadow: 0 30px 80px rgb(0 0 0 / .55); }
+.frame { position: relative; width: 100%; height: 100%; border-radius: 6px; overflow: hidden; background: #000; transition: width .7s cubic-bezier(.7,0,.2,1), height .7s cubic-bezier(.7,0,.2,1); box-shadow: 0 30px 80px var(--shadow); }
 @media (prefers-reduced-motion: reduce) { .frame { transition: none; } }
 .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .frame .reelbg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
@@ -122,7 +154,7 @@ nav.top .btn { padding: 11px 16px; font-size: 14px; }
 /* ticker */
 .ticker { border-block: 1px solid var(--line); overflow: hidden; background: var(--surface); }
 .ticker .track { display: flex; gap: 0; width: max-content; animation: scroll 38s linear infinite; }
-.ticker span { font: 800 26px/1 var(--font-display); text-transform: uppercase; padding: 18px 26px; white-space: nowrap; color: #d9d1c6; }
+.ticker span { font: 800 26px/1 var(--font-display); text-transform: uppercase; padding: 18px 26px; white-space: nowrap; color: var(--ink-2); }
 .ticker span::after { content: "●"; color: var(--accent); font-size: 12px; margin-left: 52px; vertical-align: middle; }
 @keyframes scroll { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .ticker .track { animation: none; flex-wrap: wrap; width: auto; } }
@@ -130,11 +162,11 @@ nav.top .btn { padding: 11px 16px; font-size: 14px; }
 /* sections */
 section.block { padding: 88px 0; }
 .head { display: grid; gap: 14px; margin-bottom: 40px; max-width: 760px; }
-.kicker { color: var(--accent); }
+.kicker { color: var(--accent-text); }
 
 /* work */
 .reel { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-flow: dense; gap: 14px; }
-.clip { position: relative; border-radius: 8px; overflow: hidden; background: var(--raise); text-decoration: none; display: block; min-height: 0; isolation: isolate; }
+.clip { --ink: #f4efe7; color: var(--ink); position: relative; border-radius: 8px; overflow: hidden; background: var(--raise); text-decoration: none; display: block; min-height: 0; isolation: isolate; }
 .clip.v { aspect-ratio: 9 / 16; }
 .clip.h { grid-column: span 2; aspect-ratio: 16 / 9; }
 .clip.sq { aspect-ratio: 1 / 1; }
@@ -177,7 +209,7 @@ section.block { padding: 88px 0; }
 .svc { display: grid; grid-template-columns: 70px 1.1fr 1.4fr; gap: 24px; padding: 26px 0; border-bottom: 1px solid var(--line); align-items: start; }
 .svc .n { font-family: var(--font-mono); font-size: 13px; color: var(--muted); padding-top: 6px; }
 .svc h3 { font-size: clamp(30px, 3.4vw, 40px); }
-.svc p { margin: 0 0 12px; color: #d9d1c6; }
+.svc p { margin: 0 0 12px; color: var(--ink-2); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em; padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
 @media (max-width: 760px) { .svc { grid-template-columns: 1fr; gap: 8px; } .svc .n { padding: 0; } }
@@ -186,7 +218,7 @@ section.block { padding: 88px 0; }
 .why { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .why div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 22px; display: grid; gap: 10px; align-content: start; }
 .why b { font: 800 30px/1 var(--font-display); text-transform: uppercase; }
-.why p { margin: 0; color: #d9d1c6; font-size: 15px; }
+.why p { margin: 0; color: var(--ink-2); font-size: 15px; }
 @media (max-width: 900px) { .why { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px) { .why { grid-template-columns: 1fr; } }
 
@@ -200,32 +232,17 @@ section.block { padding: 88px 0; }
 .step:nth-child(3) .bar { background: #d98a5f; }
 .step:nth-child(4) .bar { background: #c9c0b3; }
 .step h3 { font-size: 30px; }
-.step p { margin: 0; color: #d9d1c6; font-size: 15px; }
+.step p { margin: 0; color: var(--ink-2); font-size: 15px; }
 @media (max-width: 760px) { .timeline { grid-template-columns: 1fr; } .step { border-right: 0; border-bottom: 1px solid var(--line); } .step:last-child { border-bottom: 0; } }
-
-/* plans */
-.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.plan { border: 1px solid var(--line); border-radius: 12px; padding: 26px; display: grid; gap: 14px; align-content: start; background: var(--bg); }
-.plan.feature { background: var(--surface); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
-.plan h3 { font-size: 34px; }
-.plan ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-.plan li { padding-left: 22px; position: relative; color: #d9d1c6; font-size: 15px; }
-.plan li::before { content: ""; position: absolute; left: 2px; top: 9px; width: 9px; height: 9px; border-radius: 2px; background: var(--accent); }
-.plan .for { color: var(--muted); font-size: 14px; margin: 0; }
-.plan .price { margin: 0; font: 900 46px/1 var(--font-display); letter-spacing: 0.01em; font-variant-numeric: tabular-nums; }
-.plan .price span { display: block; font: 500 12px/1.6 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.plan .price small { font: 500 15px/1 var(--font-body); color: var(--muted); margin-left: 4px; }
-.plan .pop { justify-self: start; background: var(--accent); color: var(--accent-ink); padding: 4px 8px; border-radius: 4px; font-size: 11px; }
-@media (max-width: 900px) { .plans { grid-template-columns: 1fr; } }
 
 /* faq */
 .faq { display: grid; border-top: 1px solid var(--line); max-width: 860px; }
 .faq details { border-bottom: 1px solid var(--line); padding: 18px 0; }
 .faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; font-weight: 600; font-size: 19px; }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: "+"; font-family: var(--font-mono); color: var(--accent); font-size: 20px; line-height: 1; }
+.faq summary::after { content: "+"; font-family: var(--font-mono); color: var(--accent-text); font-size: 20px; line-height: 1; }
 .faq details[open] summary::after { content: "–"; }
-.faq p { margin: 12px 0 0; color: #d9d1c6; max-width: 62ch; }
+.faq p { margin: 12px 0 0; color: var(--ink-2); max-width: 62ch; }
 
 /* contact */
 .contact { border-top: 1px solid var(--line); background:
@@ -239,10 +256,10 @@ section.block { padding: 88px 0; }
 
 footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px; }
 footer .foot-brand { display: inline-flex; align-items: center; gap: 10px; }
-footer .foot-brand svg { width: 26px; height: auto; fill: var(--accent); }
+footer .foot-brand svg { width: 26px; height: auto; fill: var(--logo); }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; }
 
-.modal { position: fixed; inset: 0; z-index: 40; background: rgb(0 0 0 / .95); display: grid; place-items: center; padding: 16px; }
+.modal { --ink: #f4efe7; --surface: #171513; --line: #2e2a26; --muted: #a89f93; color: var(--ink); position: fixed; inset: 0; z-index: 40; background: rgb(0 0 0 / .95); display: grid; place-items: center; padding: 16px; }
 .modal .box { position: relative; width: min(1000px, 100%); display: grid; gap: 10px; }
 .modal .box.v { width: min(420px, 100%, calc(78vh * 9 / 16)); }
 .modal .screen { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 8px; overflow: hidden; }
@@ -269,10 +286,9 @@ footer { padding-bottom: 84px !important; }
     <div class="links">
       <a href="#work">Work</a>
       <a href="#services">Services</a>
-      <a href="#plans">Plans</a>
       <a href="#faq">FAQ</a>
     </div>
-    <a class="btn primary" href="#contact">Get a free sample</a>
+    <a class="btn primary" href="#contact">Contact us</a>
   </div>
 </nav>
 
@@ -283,7 +299,7 @@ footer { padding-bottom: 84px !important; }
       <h1>Videos that stop the scroll <em class="serif">and sell what you make.</em></h1>
       <p class="lede">Ad edits, AI UGC ads, podcast edits, reels and brand films for D2C brands and creators. Send us your footage, and we edit and deliver. 12+ years of editing experience.</p>
       <div class="ctas">
-        <a class="btn primary" href="#contact"><span class="dot" aria-hidden="true"></span>Get 2 free sample ads</a>
+        <a class="btn primary" href="#contact"><span class="dot" aria-hidden="true"></span>Start your project</a>
         <a class="btn" href="#work">See the work</a>
       </div>
       <div class="proof">
@@ -379,7 +395,7 @@ footer { padding-bottom: 84px !important; }
       <div><b>Editing is all we do</b><p>Editing, color, sound, captions and AI videos under one roof. You talk to one person, not five freelancers.</p></div>
       <div><b>Made for the feed</b><p>A strong hook in the first seconds, captions on every video, and the right format for each platform.</p></div>
       <div><b>Overnight for US &amp; UK</b><p>Send footage in your evening and wake up to finished edits. India's time zone works for you.</p></div>
-      <div><b>Free sample first</b><p>See our work on your own product before you pay anything.</p></div>
+      <div><b>Dates you can trust</b><p>We agree on delivery dates before we start, and we stick to them.</p></div>
     </div>
   </div>
 </section>
@@ -392,43 +408,9 @@ footer { padding-bottom: 84px !important; }
     </div>
     <div class="timeline">
       <div class="ruler mono"><span>Day 1</span><span>Week 1</span><span>Every month</span></div>
-      <div class="step"><div class="bar">01 · SAMPLE</div><h3>Free sample</h3><p>Send your product, footage or channel link. We make 2 sample ads or 3 reels for you, free.</p></div>
-      <div class="step"><div class="bar">02 · PLAN</div><h3>Pick a plan</h3><p>Like the samples? We agree on a monthly plan, a delivery calendar and one point of contact.</p></div>
+      <div class="step"><div class="bar">01 · BRIEF</div><h3>Share your brief</h3><p>Send your product, footage or channel link, and tell us what videos you need.</p></div>
+      <div class="step"><div class="bar">02 · EDIT</div><h3>We start editing</h3><p>We agree on a delivery calendar and one point of contact, then get to work on your videos.</p></div>
       <div class="step"><div class="bar">03 · DELIVER</div><h3>Fresh videos</h3><p>New videos arrive on schedule. We keep improving hooks and formats based on what performs for you.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="block" id="plans" aria-labelledby="plans-h" style="padding-top:0">
-  <div class="wrap">
-    <div class="head">
-      <span class="mono kicker">Monthly plans</span>
-      <h2 id="plans-h">Pick what you need</h2>
-      <p class="lede">Starting prices. The final price depends on how many videos you need. For clients outside India, we quote in US dollars.</p>
-    </div>
-    <div class="plans">
-      <div class="plan">
-        <h3>Creator</h3>
-        <p class="for">For podcasters and YouTube channels</p>
-        <p class="price"><span>From</span> ₹30,000<small>/month</small></p>
-        <ul><li>Up to 4 full episode edits</li><li>12 Shorts or Reels</li><li>Captions, B-roll, color and sound</li><li>Thumbnail ideas</li></ul>
-        <a class="btn" href="#contact">Ask for a quote</a>
-      </div>
-      <div class="plan feature">
-        <span class="mono pop">Best for brands</span>
-        <h3>Brand ads</h3>
-        <p class="for">For D2C brands running Meta and YouTube ads</p>
-        <p class="price"><span>From</span> ₹75,000<small>/month</small></p>
-        <ul><li>10 ad videos every month</li><li>UGC and AI creator ads</li><li>Hook versions to test</li><li>Ready to upload for each platform</li></ul>
-        <a class="btn primary" href="#contact">Start with a free sample</a>
-      </div>
-      <div class="plan">
-        <h3>Brand films</h3>
-        <p class="for">For launches, founder stories and documentaries</p>
-        <p class="price"><span>From</span> ₹20,000<small>/film</small></p>
-        <ul><li>1–3 minute film edited from your footage</li><li>Cinematic color grading</li><li>Music, sound design and subtitles</li><li>Cut-downs for social</li></ul>
-        <a class="btn" href="#contact">Ask for a quote</a>
-      </div>
     </div>
   </div>
 </section>
@@ -441,7 +423,6 @@ footer { padding-bottom: 84px !important; }
     </div>
     <div class="faq">
       <details><summary>Do you work with clients outside India?</summary><p>Yes. We work online with brands and creators in the US, UK, Australia and India. Because of the time difference, we can often deliver overnight for clients in the US and UK.</p></details>
-      <details><summary>Is the free sample really free?</summary><p>Yes. We make 2 sample ads or 3 reels from your product or footage. If you like them, we talk about a monthly plan. If not, no problem.</p></details>
       <details><summary>What do you need from us?</summary><p>Your product details or footage, your website or channel link, and any ads you have run before. For AI ads, product photos and key benefits are enough to start.</p></details>
       <details><summary>How fast do you deliver?</summary><p>We agree on delivery dates before we start, based on how many videos you need, and we stick to them.</p></details>
       <details><summary>Do you shoot the videos too?</summary><p>No. We are an editing studio. You send footage from your phone, your camera team or your creators, and we turn it into finished videos. For AI ads, product photos and key benefits are enough.</p></details>
@@ -452,20 +433,20 @@ footer { padding-bottom: 84px !important; }
 <section class="block contact" id="contact" aria-labelledby="contact-h">
   <div class="wrap">
     <div style="display:grid;gap:18px">
-      <span class="mono kicker">Free sample</span>
+      <span class="mono kicker">Contact</span>
       <h2 id="contact-h">Let's make your <em class="serif">first ad</em> together.</h2>
-      <p class="lede">Send us your brand or channel link and what you sell, on WhatsApp or email. We'll reply with an idea for your free sample.</p>
+      <p class="lede">Send us your brand or channel link and what you sell, on WhatsApp or email. We'll reply with ideas for your videos.</p>
     </div>
     <div class="card">
       <span class="mono muted">WhatsApp</span>
       <span class="addr">+91 88717 98578</span>
       <div class="row">
-        <a class="btn primary" href="https://wa.me/918871798578?text=Hi%20A-Zone%2C%20I%20want%20a%20free%20sample%20video%20for%20my%20brand." target="_blank" rel="noopener">Chat on WhatsApp</a>
+        <a class="btn primary" href="https://wa.me/918871798578?text=Hi%20A-Zone%2C%20I%20want%20to%20talk%20about%20video%20editing%20for%20my%20brand." target="_blank" rel="noopener">Chat on WhatsApp</a>
       </div>
       <span class="mono muted" style="margin-top:6px">Email us</span>
       <span class="addr" id="emailText">azoneindore@gmail.com</span>
       <div class="row">
-        <a class="btn" id="mailBtn" href="mailto:azoneindore@gmail.com?subject=Free%20sample%20request&amp;body=Hi%20A-Zone%2C%0A%0AMy%20brand%2Fchannel%3A%20%0AWhat%20we%20sell%3A%20%0AWhat%20videos%20we%20need%3A%20%0A">Write an email</a>
+        <a class="btn" id="mailBtn" href="mailto:azoneindore@gmail.com?subject=Video%20editing%20enquiry&amp;body=Hi%20A-Zone%2C%0A%0AMy%20brand%2Fchannel%3A%20%0AWhat%20we%20sell%3A%20%0AWhat%20videos%20we%20need%3A%20%0A">Write an email</a>
         <button class="btn" type="button" id="copyBtn">Copy email</button>
       </div>
       <a class="muted" href="https://azone.myportfolio.com/" target="_blank" rel="noopener" style="font-size:15px">Portfolio: azone.myportfolio.com ↗</a>
@@ -480,7 +461,7 @@ footer { padding-bottom: 84px !important; }
   </div>
 </footer>
 
-<a class="wa-float" href="https://wa.me/918871798578?text=Hi%20A-Zone%2C%20I%20want%20a%20free%20sample%20video%20for%20my%20brand." target="_blank" rel="noopener" aria-label="Chat with A-Zone on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v11H8.5L4 19z"/></svg><span>WhatsApp</span></a>
+<a class="wa-float" href="https://wa.me/918871798578?text=Hi%20A-Zone%2C%20I%20want%20to%20talk%20about%20video%20editing%20for%20my%20brand." target="_blank" rel="noopener" aria-label="Chat with A-Zone on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v11H8.5L4 19z"/></svg><span>WhatsApp</span></a>
 <div id="toastHost" aria-live="polite"></div>
 <div id="modalHost"></div>
 
@@ -591,6 +572,25 @@ footer { padding-bottom: 84px !important; }
   moreReel.addEventListener("click", onClip);
 
   document.getElementById("yr").textContent = new Date().getFullYear();
+
+  /* ---- day/night theme: check every minute and when the tab comes back ---- */
+  var rootEl = document.documentElement, switchTimer = null;
+  function paintThemeExtras(t) {
+    document.getElementById("themeColor").setAttribute("content", t === "light" ? "#ffffff" : "#0d0c0b");
+    document.getElementById("favicon").setAttribute("href", "logo/favicon-" + t + ".svg");
+  }
+  function syncTheme() {
+    var next = window.__pickTheme ? window.__pickTheme() : "dark";
+    if (rootEl.getAttribute("data-theme") === next) return;
+    rootEl.classList.add("theme-switching");
+    rootEl.setAttribute("data-theme", next);
+    paintThemeExtras(next);
+    clearTimeout(switchTimer);
+    switchTimer = setTimeout(function () { rootEl.classList.remove("theme-switching"); }, 1000);
+  }
+  paintThemeExtras(rootEl.getAttribute("data-theme") || "dark");
+  setInterval(syncTheme, 60000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) syncTheme(); });
 
   /* ---- hero viewfinder: snap between formats ---- */
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
