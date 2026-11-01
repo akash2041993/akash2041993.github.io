@@ -40,6 +40,7 @@ jobs:
             rm -f /tmp/v.mp4
             echo "::endgroup::"
           done < thumbs/list.txt
+          grep -v "^FAILED" thumbs/info.txt > /tmp/i || true; mv /tmp/i thumbs/info.txt
       - name: Save thumbnails
         run: |
           git config user.name "github-actions[bot]"
